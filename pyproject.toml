@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "checkbox-test-project"
+version = "0.0.1"
+description = "Checkbox test project"
+authors = ["yeghorkikhai <yeghorkikhai@gmail.com>"]
+readme = "README.md"
+packages = [{include = "checkbox_test_project"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

@@ -1,0 +1,9 @@
+version: '3.2'
+
+services:
+  psql:
+    image: postgres
+    container_name: psql_db_checkbox_project
+
+volumes:
+  pgdata:

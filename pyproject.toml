@@ -8,6 +8,11 @@ packages = [{include = "checkbox_test_project"}]
 
 [tool.poetry.dependencies]
 python = "^3.11"
+sqlalchemy = "^2.0.19"
+alembic = "^1.11.2"
+fastapi = {extras = ["all"], version = "^0.101.1"}
+loguru = "^0.7.0"
+python-dotenv = "^1.0.0"
 
 
 [build-system]

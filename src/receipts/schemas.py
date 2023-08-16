@@ -17,7 +17,7 @@ class PaymentSchema(BaseModel):
 
 
 class ReceiptSchema(BaseModel):
-    id: str
+    id: int
     products: list[ProductSchema]
     payment: PaymentSchema
     total: float

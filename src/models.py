@@ -7,7 +7,6 @@ from sqlalchemy.orm import (
 
 from sqlalchemy.dialects.postgresql import (
     BIGINT,
-    UUID,
     VARCHAR,
     JSONB,
     FLOAT,
@@ -29,20 +28,22 @@ class Base(DeclarativeBase):
 
 
 class User(Base):
-    user_id: Mapped[int] = mapped_column(BIGINT, primary_key=True, autoincrement=True)
+    __tablename__ = 'users'
+
+    id: Mapped[int] = mapped_column(BIGINT, primary_key=True, autoincrement=True)
 
     name: Mapped[str] = mapped_column(VARCHAR(32), nullable=False)
     login: Mapped[str] = mapped_column(VARCHAR(32), nullable=False)
     password: Mapped[str] = mapped_column(VARCHAR(256), nullable=False)
 
-    receipts: Mapped[list['Receipt']] = relationship()
-
 
 class Receipt(Base):
-    receipt_id: Mapped[str] = mapped_column(UUID, primary_key=True)
+    __tablename__ = 'receipts'
 
-    user_id: Mapped[int] = ForeignKey('users.user_id')
-    user: Mapped['User']
+    id: Mapped[int] = mapped_column(BIGINT, primary_key=True, autoincrement=True)
+
+    user_id: Mapped[int] = mapped_column(BIGINT, nullable=False)
+    # user: Mapped['User']
 
     products: Mapped[list[ProductSchema]] = mapped_column(JSONB, nullable=False)
     payment: Mapped[PaymentSchema] = mapped_column(JSONB, nullable=False)

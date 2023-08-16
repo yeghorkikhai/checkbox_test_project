@@ -32,7 +32,7 @@ def upgrade() -> None:
     )
     op.create_table('users',
     sa.Column('id', sa.BIGINT(), autoincrement=True, nullable=False),
-    sa.Column('name', sa.VARCHAR(length=32), nullable=False),
+    sa.Column('name', sa.VARCHAR(length=64), nullable=False),
     sa.Column('login', sa.VARCHAR(length=32), nullable=False),
     sa.Column('password', sa.VARCHAR(length=256), nullable=False),
     sa.PrimaryKeyConstraint('id')

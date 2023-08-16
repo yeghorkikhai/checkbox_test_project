@@ -20,6 +20,7 @@ from src.settings import Settings
 load_dotenv(os.path.abspath('.env'))
 
 app = FastAPI(
+    # Swagger Docs
     docs_url='/docs',
     # Disable ReDoc Docs
     redoc_url=None,

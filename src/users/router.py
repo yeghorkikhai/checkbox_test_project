@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Body
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
 from async_fastapi_jwt_auth import AuthJWT
@@ -21,9 +21,9 @@ auth_scheme = HTTPBearer()
 
 @router.post('/users', response_model=UserAccessTokenSchema)
 async def register_user(
-        name: str,
-        login: str,
-        password: str,
+        name: Annotated[str, Body(min_length=1, max_length=64)],
+        login: Annotated[str, Body(min_length=5, max_length=32)],
+        password: Annotated[str, Body(min_length=8, max_length=16)],
         database: Annotated[AsyncSession, Depends(get_database_session)],
         authorize: AuthJWT = Depends()
 ):

@@ -19,9 +19,9 @@ class ReceiptRepository:
             user_id: int,
             products: list[ProductSchema],
             payment: PaymentSchema,
-            total: float,
-            rest: float,
-    ):
+            total: int,
+            rest: int,
+    ) -> Receipt:
         receipt = Receipt(
             id=None,
             user_id=user_id,
@@ -64,7 +64,7 @@ class ReceiptRepository:
             to_date: datetime = None,
             limit: int = 10,
             offset: int = 0
-    ):
+    ) -> list[Receipt]:
         statement = select(Receipt).filter(Receipt.user_id == user_id)
 
         if payment_type:

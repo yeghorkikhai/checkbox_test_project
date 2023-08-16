@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query, Body
 
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
@@ -34,7 +34,7 @@ auth_scheme = HTTPBearer()
 
 @router.post('/receipts', response_model=ReceiptSchema)
 async def create_receipt(
-        products: list[ProductSchema],
+        products: Annotated[list[ProductSchema], Body(min_length=1)],
         payment: PaymentSchema,
         database: Annotated[AsyncSession, Depends(get_database_session)],
         authorize: AuthJWT = Depends(),
@@ -60,11 +60,11 @@ async def create_receipt(
 
 @router.get('/receipts', response_model=list[ReceiptSchema])
 async def get_receipts(
-    offset: int,
-    limit: int,
     database: Annotated[AsyncSession, Depends(get_database_session)],
     authorize: AuthJWT = Depends(),
-    token: HTTPAuthorizationCredentials = Depends(auth_scheme)
+    token: HTTPAuthorizationCredentials = Depends(auth_scheme),
+    offset: int = 0,
+    limit: Annotated[int | None, Query(le=100)] = 25,
 ):
     await authorize.jwt_required()
     user_id: int = await authorize.get_jwt_subject()
@@ -82,13 +82,13 @@ async def get_search_receipts(
     database: Annotated[AsyncSession, Depends(get_database_session)],
     authorize: AuthJWT = Depends(),
     token: HTTPAuthorizationCredentials = Depends(auth_scheme),
-    payment_type: PaymentType | None = None,
-    min_amount: float | None = None,
-    max_amount: float | None = None,
+    payment_type: Annotated[PaymentType, PaymentType.CASH] = None,
+    min_amount: Annotated[int | None, Query(ge=1)] = None,
+    max_amount: Annotated[int | None, Query(ge=1)] = None,
     from_date: datetime | None = None,
     to_date: datetime | None = None,
     offset: int = 0,
-    limit: int = 10,
+    limit: Annotated[int | None, Query(le=100)] = 25,
 ):
     await authorize.jwt_required()
     user_id: int = await authorize.get_jwt_subject()
@@ -114,7 +114,7 @@ async def get_search_receipts(
 async def get_receipt(
     receipt_id: int,
     database: Annotated[AsyncSession, Depends(get_database_session)],
-    width: int = 42
+    width: Annotated[int, Query(ge=32, le=128)] = 42
 ):
     receipt = await ReceiptRepository(database).get(receipt_id=receipt_id)
     user = await UserRepository(database).get(user_id=receipt.user_id)

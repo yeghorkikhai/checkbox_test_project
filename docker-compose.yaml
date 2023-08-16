@@ -3,16 +3,29 @@ version: '3.2'
 services:
   psql:
     image: postgres
-    container_name: psql_db_checkbox_project
+    container_name: psql_db_checkbox_api
     restart: always
+#    command: -p ${DATABASE_PORT}
+#    expose:
+#      - ${DATABASE_PORT}
     ports:
-      - "${DATABASE_PORT}:5432"
+      - 54329:5432
     environment:
       POSTGRES_USER: ${DATABASE_USER}
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
       POSTGRES_DB: ${DATABASE_NAME}
     volumes:
       - pgdata:/var/lib/postgresql/data
+
+  app:
+    build:
+      context: .
+    container_name: checkbox_api
+    ports:
+      - 8080:80
+    depends_on:
+      - psql
+    command: python -m alembic upgrade head
 
 volumes:
   pgdata:

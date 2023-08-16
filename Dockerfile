@@ -1,4 +1,4 @@
-FROM anielsen/python3.11.4
+FROM python:3.11.4
 
 RUN mkdir /home/checkbox_api
 

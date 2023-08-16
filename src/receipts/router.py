@@ -26,12 +26,14 @@ from src.receipts.schemas import (
 from src.users.schemas import UserSchema
 
 from .utils import generate_text_receipt
+from src.utils.logger import logger
 
 router = APIRouter()
 
 auth_scheme = HTTPBearer()
 
 
+@logger.catch
 @router.post('/receipts', response_model=ReceiptSchema)
 async def create_receipt(
         products: Annotated[list[ProductSchema], Body(min_length=1)],
@@ -58,6 +60,7 @@ async def create_receipt(
     return ReceiptSchema.model_validate(receipt, from_attributes=True)
 
 
+@logger.catch
 @router.get('/receipts', response_model=list[ReceiptSchema])
 async def get_receipts(
     database: Annotated[AsyncSession, Depends(get_database_session)],
@@ -77,6 +80,7 @@ async def get_receipts(
     ]
 
 
+@logger.catch
 @router.get('/receipts/search', response_model=list[ReceiptSchema])
 async def get_search_receipts(
     database: Annotated[AsyncSession, Depends(get_database_session)],
@@ -110,6 +114,7 @@ async def get_search_receipts(
     ]
 
 
+@logger.catch
 @router.get('/receipts/{receipt_id}', response_class=PlainTextResponse)
 async def get_receipt(
     receipt_id: int,

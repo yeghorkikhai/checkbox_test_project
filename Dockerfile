@@ -1,8 +1,8 @@
-FROM python3.11.4
+FROM anielsen/python3.11.4
 
-RUN mkdir /checkbox_api
+RUN mkdir /home/checkbox_api
 
-WORKDIR /checkbox_api
+WORKDIR /home/checkbox_api
 
 COPY requirements.txt .
 

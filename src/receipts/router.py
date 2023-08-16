@@ -15,6 +15,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.dependencies import get_database_session
 
 from .repositories import ReceiptRepository
+from src.users.repositories import UserRepository
 
 from src.receipts.enums import PaymentType
 from src.receipts.schemas import (
@@ -22,6 +23,8 @@ from src.receipts.schemas import (
     PaymentSchema,
     ReceiptSchema
 )
+from src.users.schemas import UserSchema
+
 from .utils import generate_text_receipt
 
 router = APIRouter()
@@ -114,10 +117,13 @@ async def get_receipt(
     width: int = 42
 ):
     receipt = await ReceiptRepository(database).get(receipt_id=receipt_id)
+    user = await UserRepository(database).get(user_id=receipt.user_id)
+
     receipt = ReceiptSchema.model_validate(receipt, from_attributes=True)
+    user = UserSchema.model_validate(user, from_attributes=True)
 
     return generate_text_receipt(
         width=width,
-        user_name='ФОП Джонсонюк Борис',
+        user_name=user.name,
         receipt=receipt
     )

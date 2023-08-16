@@ -1,3 +1,4 @@
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.models import User
@@ -12,7 +13,7 @@ class UserRepository:
             name: str,
             login: str,
             password: str
-    ):
+    ) -> int:
         user: User = User(
             name=name,
             login=login,
@@ -25,3 +26,8 @@ class UserRepository:
         await self._session.commit()
 
         return user_id
+
+    async def get(self, user_id: int) -> User | None:
+        statement = select(User).where(User.id == user_id)
+        result = await self._session.execute(statement)
+        return result.scalar_one_or_none()

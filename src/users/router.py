@@ -13,12 +13,14 @@ from .schemas import (
     UserSchema
 )
 from src.dependencies import get_database_session
+from src.utils.logger import logger
 
 router = APIRouter()
 
 auth_scheme = HTTPBearer()
 
 
+@logger.catch
 @router.post('/users', response_model=UserAccessTokenSchema)
 async def register_user(
         name: Annotated[str, Body(min_length=1, max_length=64)],
@@ -30,11 +32,14 @@ async def register_user(
     user_id = await UserRepository(database).create_one(name=name, login=login, password=password)
     access_token = await authorize.create_access_token(subject=user_id)
 
+    logger.info(f'UserRegistered: user_id={user_id}')
+
     return UserAccessTokenSchema(
         access_token=access_token
     )
 
 
+@logger.catch
 @router.get('/users/me', response_model=UserSchema)
 async def get_me(
         database: Annotated[AsyncSession, Depends(get_database_session)],
@@ -43,6 +48,8 @@ async def get_me(
 ):
     await authorize.jwt_required()
     user_id: int = await authorize.get_jwt_subject()
+
+    logger.info(f'UsersMe: user_id={user_id}')
 
     user = await UserRepository(database).get(user_id=user_id)
 

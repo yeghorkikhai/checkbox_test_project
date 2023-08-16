@@ -46,6 +46,8 @@ async def create_receipt(
 
     user_id: int = await authorize.get_jwt_subject()
 
+    logger.info(f'CreateRecept: user_id={user_id}')
+
     total = sum([product.price * product.quantity for product in products])
     rest = payment.amount - total
 
@@ -56,6 +58,8 @@ async def create_receipt(
         total=total,
         rest=rest
     )
+
+    logger.info(f'ReceiptCreated: receipt_id={receipt.id}, user_id={user_id}')
 
     return ReceiptSchema.model_validate(receipt, from_attributes=True)
 
@@ -71,6 +75,8 @@ async def get_receipts(
 ):
     await authorize.jwt_required()
     user_id: int = await authorize.get_jwt_subject()
+
+    logger.info(f'GetReceipts: user_id={user_id}, offset={offset}, limit={limit}')
 
     receipts = await ReceiptRepository(database).get_all(user_id=user_id, offset=offset, limit=limit)
 
@@ -96,6 +102,8 @@ async def get_search_receipts(
 ):
     await authorize.jwt_required()
     user_id: int = await authorize.get_jwt_subject()
+
+    logger.info(f'SearchReceipts: user_id={user_id}, offset={offset}, limit={limit}')
 
     receipts = await ReceiptRepository(database).search(
         user_id=user_id,
@@ -123,6 +131,8 @@ async def get_receipt(
 ):
     receipt = await ReceiptRepository(database).get(receipt_id=receipt_id)
     user = await UserRepository(database).get(user_id=receipt.user_id)
+
+    logger.info(f'GetReceipt: receipt_id={receipt_id}, user_id={user.id}')
 
     receipt = ReceiptSchema.model_validate(receipt, from_attributes=True)
     user = UserSchema.model_validate(user, from_attributes=True)

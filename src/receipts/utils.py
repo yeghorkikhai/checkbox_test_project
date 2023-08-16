@@ -1,4 +1,5 @@
 from .schemas import ReceiptSchema
+from src.utils.logger import logger
 
 
 def format_num(num: int | float):
@@ -7,6 +8,8 @@ def format_num(num: int | float):
 
 
 def generate_text_receipt(width: int, user_name: str, receipt: ReceiptSchema) -> str:
+    logger.info(f"GenerateTextReceipt: receipt_id={receipt.id}")
+
     products_text = ""
     for index, product in enumerate(receipt.products):
         products_text += f"""

@@ -30,3 +30,8 @@ VERSION=0.0.1
 ```
 sudo docker-compose up -d --build
 ```
+
+#### Open docs
+```
+http://localhost:8080/docs
+```

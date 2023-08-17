@@ -1,0 +1,24 @@
+version: '3.2'
+
+services:
+  psql:
+    image: postgres
+    container_name: test_postgresql_checkbox_api
+    restart: always
+    ports:
+      - 54328:5432
+    environment:
+      POSTGRES_USER: ${TEST_DATABASE_USER}
+      POSTGRES_PASSWORD: ${TEST_DATABASE_PASSWORD}
+      POSTGRES_DB: ${TEST_DATABASE_NAME}
+    networks:
+      - test_checkbox_api_net
+    volumes:
+      - test_pgdata:/var/lib/postgresql/test_data
+
+networks:
+  test_checkbox_api_net:
+    driver: bridge
+
+volumes:
+  test_pgdata:

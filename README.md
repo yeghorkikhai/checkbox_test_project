@@ -35,3 +35,23 @@ sudo docker-compose up -d --build
 ```
 http://localhost:8080/docs
 ```
+
+### Pytest Tests
+
+#### Create venv
+```
+python3.11 -m venv venv
+source venv/bin/activate
+venv/bin/pip install -U pip setuptools
+venv/bin/pip install poetry
+```
+
+#### Install requirements
+```
+poetry install
+```
+
+#### Run tests
+```
+python -m pytest tests/
+```

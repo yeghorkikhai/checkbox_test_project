@@ -23,7 +23,7 @@ DATABASE_URL = URL.create(
 
 
 class Database:
-    def __init__(self, url: str = DATABASE_URL):
+    def __init__(self, url: URL = DATABASE_URL):
         self._async_engine: AsyncEngine = _create_async_engine(url)
         self._async_session_maker: async_sessionmaker[AsyncSession] = async_sessionmaker(
             bind=self._async_engine,

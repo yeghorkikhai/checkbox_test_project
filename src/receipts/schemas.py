@@ -22,7 +22,7 @@ class PaymentSchema(BaseModel):
 
 class ReceiptSchema(BaseModel):
     id: int
-    products: list[ProductSchema] = Field(min_items=1)
+    products: list[ProductSchema] = Field(min_length=1)
     payment: PaymentSchema
 
     total: int = Field(ge=1)

@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, Query, Body
+from fastapi import APIRouter, Depends, Query, Body, Request
 
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
@@ -36,6 +36,7 @@ auth_scheme = HTTPBearer()
 @logger.catch
 @router.post('/receipts', response_model=ReceiptSchema)
 async def create_receipt(
+        request: Request,
         products: Annotated[list[ProductSchema], Body(min_length=1)],
         payment: PaymentSchema,
         database: Annotated[AsyncSession, Depends(get_database_session)],
@@ -43,7 +44,6 @@ async def create_receipt(
         token: HTTPAuthorizationCredentials = Depends(auth_scheme)
 ):
     await authorize.jwt_required()
-
     user_id: int = await authorize.get_jwt_subject()
 
     logger.info(f'CreateRecept: user_id={user_id}')
@@ -70,8 +70,8 @@ async def get_receipts(
     database: Annotated[AsyncSession, Depends(get_database_session)],
     authorize: AuthJWT = Depends(),
     token: HTTPAuthorizationCredentials = Depends(auth_scheme),
-    offset: int = 0,
-    limit: Annotated[int | None, Query(le=100)] = 25,
+    offset: Annotated[int | None, Query(ge=0)] = 0,
+    limit: Annotated[int | None, Query(le=100, gt=0)] = 25,
 ):
     await authorize.jwt_required()
     user_id: int = await authorize.get_jwt_subject()
@@ -97,8 +97,8 @@ async def get_search_receipts(
     max_amount: Annotated[int | None, Query(ge=1)] = None,
     from_date: datetime | None = None,
     to_date: datetime | None = None,
-    offset: int = 0,
-    limit: Annotated[int | None, Query(le=100)] = 25,
+    offset: Annotated[int | None, Query(ge=0)] = 0,
+    limit: Annotated[int | None, Query(le=100, gt=0)] = 25,
 ):
     await authorize.jwt_required()
     user_id: int = await authorize.get_jwt_subject()

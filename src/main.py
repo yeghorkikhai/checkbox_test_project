@@ -1,6 +1,6 @@
 import os
 
-from fastapi import FastAPI, HTTPException, Depends, Request
+from fastapi import FastAPI, Request
 from starlette.middleware.base import BaseHTTPMiddleware
 
 from fastapi.responses import JSONResponse
@@ -11,7 +11,7 @@ from dotenv import load_dotenv
 
 from src.middlewares.database import DatabaseMiddleware
 
-from src.database import Database
+from src.database import Database, DATABASE_URL
 from src.users.router import router as users_router
 from src.receipts.router import router as receipts_router
 
@@ -50,5 +50,5 @@ app.include_router(
     tags=['Receipts']
 )
 
-database = Database()
+database = Database(DATABASE_URL)
 app.add_middleware(BaseHTTPMiddleware, dispatch=DatabaseMiddleware(database.sessionmaker))
